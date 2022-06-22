@@ -5,16 +5,16 @@ import { Results } from 'realm';
 import CardNota from '../../components/CardNota';
 import Texto from '../../components/Texto';
 import getRealm from '../../database/realm';
-import INotas from '../../interfaces/INotas';
+import INotasSchema from '../../interfaces/INotasSchema';
 
 function Home() {
 
-    const [notas, setNotas] = React.useState<INotas[]>([])
+    const [notas, setNotas] = React.useState<INotasSchema[]>([])
 
     async function getNotas () {
         const realm = await getRealm()
 
-        const notas:Results<INotas> = realm.objects('Nota')
+        const notas:Results<INotasSchema> = realm.objects('Nota')
         setNotas([...notas])
 
         realm.addListener('change', () => {
@@ -41,7 +41,7 @@ function Home() {
             data={notas}
             renderItem={({item}) => 
                 <CardNota
-                    id={item.id}
+                    _id={item._id}
                     titulo={item.titulo}
                     descricao={item.descricao}
                 />

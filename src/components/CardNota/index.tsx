@@ -1,22 +1,19 @@
 import * as React from 'react';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
+
+import INotaValores from '../../interfaces/INotaValores';
 import EditarNota from './components/EditarNota';
 import NotaButton from './components/NotaButton';
 
 interface Props {
-    id: number,
+    _id: number,
     titulo: string,
     descricao: string
 }
 
-export interface IEditarNota {
-    titulo: string,
-    descricao: string
-}
+function CardNota({_id, titulo, descricao} : Props) {
 
-function CardNota({id, titulo, descricao} : Props) {
-
-    const [editarNota, setEditarNota] = React.useState<IEditarNota>({
+    const [editarNota, setEditarNota] = React.useState<INotaValores>({
         titulo: titulo,
         descricao: descricao
     });
