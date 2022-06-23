@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Modal, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Dimensions, Modal, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import getRealm from '../../database/realm';
 
 import INotaValores from '../../interfaces/INotaValores';
 import Texto from '../Texto';
@@ -15,13 +16,34 @@ function ModalLancarNota({modalVisivel, setModalVisivel} : Props) {
     const [dadosForm, setDadosFrom] = React.useState<INotaValores>({
         titulo: '',
         descricao: ''
-    })
+    });
+
+    async function criarNota () {
+        const realm = await getRealm();
+
+        realm.write(() => {
+            const novaNota = {
+                ...dadosForm,
+                _id: realm.objects('Nota').length
+            }
+
+            realm.create('Nota', novaNota)
+        })
+    }
 
     return (  
-        <Modal>
-            <ScrollView>
+        <Modal
+            transparent
+            visible={modalVisivel}
+            animationType='slide'
+        >
+            <ScrollView style={estilos.modalContainer}>
+                <Texto style={estilos.modalTitulo}>
+                    Insira uma nova nota:
+                </Texto>
                 <TextInput
                     style={estilos.input}
+                    placeholder='Titulo da nota'
                     value={dadosForm.titulo}
                     onChangeText={text => setDadosFrom({
                         ...dadosForm,
@@ -29,20 +51,30 @@ function ModalLancarNota({modalVisivel, setModalVisivel} : Props) {
                     })}
                 />
                 <TextInput
-                    style={estilos.input}
+                    style={[estilos.input, {textAlignVertical: 'top'}]}
+                    placeholder='Descrição da nota'
                     value={dadosForm.descricao}
+                    multiline
+                    numberOfLines={5}
                     onChangeText={text => setDadosFrom({
                         ...dadosForm,
                         descricao: text
                     })}
                 />
-                <TouchableOpacity>
-                    <Texto>
+                <TouchableOpacity
+                    onPress={() => {
+                        setModalVisivel(false)
+                        criarNota()
+                    }}
+                >
+                    <Texto style={{...estilos.legendaBotao, color: 'darkblue'}}>
                         Salvar
                     </Texto>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Texto>
+                <TouchableOpacity
+                    onPress={() => setModalVisivel(false)}
+                >
+                    <Texto style={{...estilos.legendaBotao, color: 'red'}}>
                         Cancelar
                     </Texto>
                 </TouchableOpacity>
@@ -52,7 +84,29 @@ function ModalLancarNota({modalVisivel, setModalVisivel} : Props) {
 }
 
 const estilos = StyleSheet.create({
-
+    modalContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: Dimensions.get('screen').width,
+        backgroundColor: 'white',
+        elevation: 10,
+        paddingVertical: 20,
+        paddingHorizontal: 20
+    },
+    modalTitulo: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginBottom: 10
+    },
+    input: {
+        marginBottom: 10,
+        fontSize: 15,
+        fontFamily: 'Poppins-Regular'
+    },
+    legendaBotao: {
+        fontSize: 15
+    }
 })
 
 export default ModalLancarNota;

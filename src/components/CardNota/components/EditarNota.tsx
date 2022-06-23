@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { Animated, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { IEditarNota } from '..';
+
+import getRealm from '../../../database/realm';
+import INotaValores from '../../../interfaces/INotaValores';
 import Texto from '../../Texto';
 
 interface Props {
-    setEditarNota: React.Dispatch<React.SetStateAction<IEditarNota>>,
+    _id: number,
+    setEditarNota: React.Dispatch<React.SetStateAction<INotaValores>>,
     setNotaAberta: React.Dispatch<React.SetStateAction<boolean>>,
-    editarNota: IEditarNota
+    editarNota: INotaValores
 }
 
-function EditarNota({setEditarNota, setNotaAberta, editarNota} : Props) {
+function EditarNota({_id, setEditarNota, setNotaAberta, editarNota} : Props) {
 
-    const opacidade = new Animated.Value(0)
+    const [opacidade] = React.useState(new Animated.Value(0))
     React.useEffect(() => {
         Animated.timing(opacidade, {
             toValue: 1,
@@ -40,12 +43,21 @@ function EditarNota({setEditarNota, setNotaAberta, editarNota} : Props) {
                         descricao: text
                     })}
                     multiline
-                    numberOfLines={10}
+                    numberOfLines={5}
                 />
                 <TouchableOpacity
                     onPress={() => setNotaAberta(false)}
                 >
-                    <Texto>Cancelar</Texto>
+                    <Texto style={{...estilos.legendaBotao, color: 'darkblue'}}>
+                        Salvar
+                    </Texto>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => setNotaAberta(false)}
+                >
+                    <Texto style={{...estilos.legendaBotao, color: 'red'}}>
+                        Cancelar
+                    </Texto>
                 </TouchableOpacity>
             </Animated.View>
     );
@@ -56,18 +68,20 @@ const estilos = StyleSheet.create({
         
     },
     inputTitulo: {
-        fontSize: 20,
-        fontFamily: 'poppinsRegular',
+        fontSize: 18,
+        fontFamily: 'Poppins-SemiBold',
         padding: 10,
         marginBottom: 10,
-        fontWeight: 'bold'
     },
     inputDescricao: {
-        fontSize: 18,
-        fontFamily: 'poppinsRegular',
+        fontSize: 15,
+        fontFamily: 'Poppins-Regular',
         marginBottom: 10,
         padding: 10,
         textAlignVertical: 'top',
+    },
+    legendaBotao: {
+        fontSize: 15
     }
 })
 

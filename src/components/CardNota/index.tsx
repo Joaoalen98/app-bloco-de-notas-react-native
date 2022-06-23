@@ -19,12 +19,11 @@ function CardNota({_id, titulo, descricao} : Props) {
     });
 
     const slideNotaValorInicial = Dimensions.get('screen').width;
-    const slideNotaValorFinal = 0
-    const animacaoSlideNota = new Animated.Value(slideNotaValorInicial);
+    const [animacaoSlideNota] = React.useState(new Animated.Value(slideNotaValorInicial));
     React.useEffect(() => {
         Animated.timing(animacaoSlideNota, {
-            toValue: slideNotaValorFinal,
-            duration: 1000,
+            toValue: 0,
+            duration: 500,
             useNativeDriver: false
         }).start()
     }, [])
@@ -36,6 +35,7 @@ function CardNota({_id, titulo, descricao} : Props) {
             {
                 notaAberta ? 
                 <EditarNota
+                    _id={_id}
                     editarNota={editarNota}
                     setEditarNota={setEditarNota}
                     setNotaAberta={setNotaAberta}
@@ -43,6 +43,7 @@ function CardNota({_id, titulo, descricao} : Props) {
                 />
                 :
                 <NotaButton
+                    _id={_id}
                     titulo={titulo}
                     descricao={descricao}
                     setNotaAberta={setNotaAberta}
@@ -59,7 +60,8 @@ const estilos = StyleSheet.create({
         padding: 20,
         borderRadius: 15,
         borderColor: '#ccc',
-        borderWidth: 1
+        borderWidth: 1,
+        marginBottom: 10
     }
 })
 

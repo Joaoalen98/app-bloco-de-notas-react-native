@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { FlatList, Pressable, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { FlatList, Pressable, StyleSheet } from 'react-native';
 import { Results } from 'realm';
 
 import CardNota from '../../components/CardNota';
+import ModalLancarNota from '../../components/ModalLancarNota';
 import Texto from '../../components/Texto';
 import getRealm from '../../database/realm';
 import INotasSchema from '../../interfaces/INotasSchema';
@@ -10,9 +11,10 @@ import INotasSchema from '../../interfaces/INotasSchema';
 function Home() {
 
     const [notas, setNotas] = React.useState<INotasSchema[]>([])
+    const [modalVisivel, setModalVisivel] = React.useState<boolean>(false);
 
     async function getNotas () {
-        const realm = await getRealm()
+        const realm = await getRealm();
 
         const notas:Results<INotasSchema> = realm.objects('Nota')
         setNotas([...notas])
@@ -23,7 +25,7 @@ function Home() {
     }
 
     React.useEffect(() => {
-        getNotas();
+        getNotas()
     }, [])
 
     return (<>
@@ -49,11 +51,17 @@ function Home() {
         />
         <Pressable
             style={estilos.botaoAdicionarNota}
+            onPress={() => setModalVisivel(true)}
+            android_ripple={{color: 'pink'}}
         >
             <Texto style={estilos.botaoLegenda}>
                 Adicionar Nota
             </Texto>
         </Pressable>
+        <ModalLancarNota
+            modalVisivel={modalVisivel}
+            setModalVisivel={setModalVisivel}
+        />
     </>
     );
 }
