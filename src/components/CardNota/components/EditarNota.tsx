@@ -7,12 +7,17 @@ import Texto from '../../Texto';
 
 interface Props {
     _id: number,
-    setEditarNota: React.Dispatch<React.SetStateAction<INotaValores>>,
     setNotaAberta: React.Dispatch<React.SetStateAction<boolean>>,
-    editarNota: INotaValores
+    titulo: string,
+    descricao: string
 }
 
-function EditarNota({_id, setEditarNota, setNotaAberta, editarNota} : Props) {
+function EditarNota({_id, setNotaAberta, titulo, descricao } : Props) {
+
+    const [editarNota, setEditarNota] = React.useState<INotaValores>({
+        titulo: titulo,
+        descricao: descricao
+    });
 
     const [opacidade] = React.useState(new Animated.Value(0))
     React.useEffect(() => {
@@ -23,6 +28,15 @@ function EditarNota({_id, setEditarNota, setNotaAberta, editarNota} : Props) {
         }).start()
     }, [])
 
+    async function edicaoNota () {
+        const realm = await getRealm()
+
+        const nota:Realm.Object & INotaValores = realm.objectForPrimaryKey('Nota', _id)
+        realm.write(() => {
+            nota.titulo = editarNota.titulo,
+            nota.descricao = editarNota.descricao
+        })
+    }
     return (  
         <Animated.View style={[estilos.notaEdicaoContainer, {opacity: opacidade}]}>
                 <TextInput
@@ -46,7 +60,10 @@ function EditarNota({_id, setEditarNota, setNotaAberta, editarNota} : Props) {
                     numberOfLines={5}
                 />
                 <TouchableOpacity
-                    onPress={() => setNotaAberta(false)}
+                    onPress={() => {
+                        setNotaAberta(false)
+                        edicaoNota()
+                    }}
                 >
                     <Texto style={{...estilos.legendaBotao, color: 'darkblue'}}>
                         Salvar

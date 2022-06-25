@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
 
 import INotaValores from '../../interfaces/INotaValores';
+import AvisoApagarNota from './components/AvisoApagarNota';
 import EditarNota from './components/EditarNota';
 import NotaButton from './components/NotaButton';
 
@@ -12,11 +13,6 @@ interface Props {
 }
 
 function CardNota({_id, titulo, descricao} : Props) {
-
-    const [editarNota, setEditarNota] = React.useState<INotaValores>({
-        titulo: titulo,
-        descricao: descricao
-    });
 
     const slideNotaValorInicial = Dimensions.get('screen').width;
     const [animacaoSlideNota] = React.useState(new Animated.Value(slideNotaValorInicial));
@@ -29,20 +25,26 @@ function CardNota({_id, titulo, descricao} : Props) {
     }, [])
 
     const [notaAberta, setNotaAberta] = React.useState<boolean>(false)
+    const [avisoAberto, setAvisoAberto] = React.useState<boolean>(false)
 
     return (  
-        <Animated.View style={[estilos.animatedContainer, {marginLeft: animacaoSlideNota}]}>
+        <Animated.View 
+            style={[
+                estilos.animatedContainer, 
+                {marginLeft: animacaoSlideNota}
+            ]}>
             {
                 notaAberta ? 
                 <EditarNota
                     _id={_id}
-                    editarNota={editarNota}
-                    setEditarNota={setEditarNota}
+                    titulo={titulo}
+                    descricao={descricao}
                     setNotaAberta={setNotaAberta}
                     key={1}
                 />
                 :
                 <NotaButton
+                    setAvisoAberto={setAvisoAberto}
                     _id={_id}
                     titulo={titulo}
                     descricao={descricao}
@@ -50,6 +52,11 @@ function CardNota({_id, titulo, descricao} : Props) {
                     key={2}
                 />
             }
+            <AvisoApagarNota 
+                _id={_id}
+                avisoAberto={avisoAberto}
+                setAvisoAberto={setAvisoAberto}
+            />
         </Animated.View>
     );
 }

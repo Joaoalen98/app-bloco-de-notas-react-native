@@ -7,11 +7,12 @@ import Texto from '../../Texto';
 interface Props {
     _id: number
     setNotaAberta: React.Dispatch<React.SetStateAction<boolean>>,
+    setAvisoAberto: React.Dispatch<React.SetStateAction<boolean>>,
     titulo: string,
     descricao: string
 }
 
-function NotaButton({_id, setNotaAberta, titulo, descricao} : Props) {
+function NotaButton({_id, setNotaAberta, setAvisoAberto, titulo, descricao} : Props) {
 
     const [opacidade] = React.useState(new Animated.Value(0))
     React.useEffect(() => {
@@ -38,6 +39,7 @@ function NotaButton({_id, setNotaAberta, titulo, descricao} : Props) {
                 onPress={() => {
                     setNotaAberta(true)
                 }}
+                onLongPress={() => setAvisoAberto(true)}
             >
                 <Texto style={estilos.notaTitulo}>{titulo}</Texto>
                 <Texto style={estilos.notaDescricao}>{descricao}</Texto>

@@ -13,10 +13,12 @@ interface Props {
 
 function ModalLancarNota({modalVisivel, setModalVisivel} : Props) {
 
-    const [dadosForm, setDadosFrom] = React.useState<INotaValores>({
+    const formLimpo:INotaValores = {
         titulo: '',
-        descricao: ''
-    });
+        descricao: ''     
+    }
+
+    const [dadosForm, setDadosFrom] = React.useState<INotaValores>(formLimpo);
 
     async function criarNota () {
         const realm = await getRealm();
@@ -65,6 +67,7 @@ function ModalLancarNota({modalVisivel, setModalVisivel} : Props) {
                     onPress={() => {
                         setModalVisivel(false)
                         criarNota()
+                        setDadosFrom(formLimpo)
                     }}
                 >
                     <Texto style={{...estilos.legendaBotao, color: 'darkblue'}}>
